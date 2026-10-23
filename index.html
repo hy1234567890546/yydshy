@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>愿你活成自己喜欢的样子 · 像素信笺</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  @font-face{
+    font-family:'Zpix';
+    src:url('https://cdn.jsdelivr.net/gh/SolidZORO/zpix-pixel-font/dist/Zpix.woff2') format('woff2');
+    font-display:swap;
+  }
+
+  :root{
+    --bg:#171329;
+    --bg2:#2a1e3f;
+    --ink:#2b2340;
+    --paper:#f6ead9;
+    --paper-d:#ead9c2;
+    --gold:#ffcd75;
+    --rose:#ff8fa3;
+    --rose-d:#e43b44;
+    --leaf:#38b764;
+    --text:#f4efe6;
+    --shadow:#000;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(circle at 15% 12%, rgba(255,143,163,.10), transparent 42%),
+      radial-gradient(circle at 85% 18%, rgba(255,205,117,.09), transparent 44%),
+      radial-gradient(circle at 50% 95%, rgba(160,91,227,.12), transparent 55%),
+      linear-gradient(165deg, var(--bg) 0%, var(--bg2) 100%);
+    background-color:var(--bg);
+    color:var(--text);
+    font-family:'Zpix','Microsoft YaHei','SimHei',sans-serif;
+    image-rendering:pixelated;
+    overflow-x:hidden;
+    line-height:1.8;
+  }
+  ::selection{background:var(--gold);color:#000;}
+  ::-webkit-scrollbar{width:12px;}
+  ::-webkit-scrollbar-track{background:#12101f;}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff8fa3,#e43b44);border:3px solid #000;}
+
+  .mono{font-family:'Press Start 2P',monospace;}
+
+  /* ===== 漂浮像素花瓣背景 ===== */
+  .petals{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .petal{
+    position:absolute;width:10px;height:10px;
+    background:var(--rose);
+    box-shadow:inset -2px -2px 0 rgba(0,0,0,.18), 2px 2px 0 rgba(0,0,0,.25);
+    animation:petalfall linear infinite;
+    opacity:.55;
+  }
+  .petal.g{background:var(--gold);}
+  .petal.v{background:#a05be3;}
+  .petal.l{background:var(--leaf);}
+  @keyframes petalfall{
+    from{transform:translateY(-6vh) rotate(0deg);}
+    to{transform:translateY(112vh) rotate(540deg);}
+  }
+
+  /* ===== 页面骨架 ===== */
+  .page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 18px 60px;}
+
+  /* ===== 顶部小标 ===== */
+  .kicker{
+    text-align:center;margin:34px 0 10px;font-size:12px;letter-spacing:3px;
+    color:var(--gold);text-shadow:2px 2px 0 #000;
+  }
+  .kicker .mono{display:block;margin-top:8px;font-size:9px;color:var(--rose);letter-spacing:2px;}
+
+  h1{
+    text-align:center;font-size:clamp(26px,5.2vw,44px);margin:6px 0 4px;
+    color:var(--gold);letter-spacing:2px;
+    text-shadow:3px 3px 0 #000, 0 0 26px rgba(255,205,117,.35);
+  }
+  .subtitle{
+    text-align:center;font-size:14px;color:#cdbfe0;margin:0 0 8px;
+    text-shadow:2px 2px 0 #000;
+  }
+
+  /* ===== 像素画框（照片通用） ===== */
+  .pix-frame{
+    background:linear-gradient(180deg,#221b3d,#181331);
+    border:4px solid #000;
+    box-shadow:0 0 0 4px var(--gold), 10px 10px 0 var(--shadow);
+    padding:12px;position:relative;
+  }
+  .pix-frame::before{
+    content:'';position:absolute;inset:7px;pointer-events:none;
+    border:2px dashed rgba(255,205,117,.25);
+  }
+  .pix-frame img{display:block;width:100%;height:auto;border:3px solid #000;position:relative;}
+  .pix-cap{
+    margin-top:10px;font-size:13px;color:var(--gold);text-align:center;
+    letter-spacing:1px;text-shadow:2px 2px 0 #000;position:relative;line-height:1.7;
+  }
+  .pix-cap small{display:block;color:#9fd8ff;font-size:11px;margin-top:2px;}
+
+  /* ===== 开头 · 保安照 ===== */
+  .hero{margin-top:38px;display:flex;flex-direction:column;align-items:center;}
+  .hero .pix-frame{width:min(360px,86vw);animation:herofloat 5s ease-in-out infinite;}
+  @keyframes herofloat{0%,100%{transform:translateY(0) rotate(-.6deg);}50%{transform:translateY(-10px) rotate(.6deg);}}
+  .hero-note{
+    margin-top:22px;text-align:center;font-size:15px;color:#e8ddc9;
+    text-shadow:2px 2px 0 #000;max-width:560px;
+  }
+  .hero-note b{color:var(--gold);}
+  .scroll-hint{
+    margin-top:26px;font-size:12px;color:#9fd8ff;letter-spacing:2px;
+    text-shadow:2px 2px 0 #000;animation:hintbob 1.6s steps(2,end) infinite;
+  }
+  @keyframes hintbob{50%{transform:translateY(6px);}}
+
+  /* ===== 中段 · 两张肖像 ===== */
+  .mid{margin-top:74px;}
+  .sect-title{
+    text-align:center;font-size:clamp(19px,3.4vw,26px);color:var(--rose);
+    text-shadow:3px 3px 0 #000;letter-spacing:2px;margin-bottom:8px;
+  }
+  .sect-sub{text-align:center;font-size:12px;color:#b9aec9;margin-bottom:30px;text-shadow:2px 2px 0 #000;}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  .duo .pix-frame{transition:transform .18s ease, box-shadow .18s ease;will-change:transform;}
+  .duo .pix-frame:hover{box-shadow:0 0 0 4px var(--rose), 14px 14px 0 var(--shadow);}
+
+  /* ===== 结尾 · 信笺 ===== */
+  .end{margin-top:84px;}
+  .letter-zone{position:relative;}
+  .letter{
+    background:linear-gradient(180deg,var(--paper),var(--paper-d));
+    border:4px solid #000;
+    box-shadow:0 0 0 4px var(--rose), 12px 12px 0 var(--shadow);
+    padding:clamp(26px,5vw,48px) clamp(22px,5vw,54px);
+    color:var(--ink);position:relative;
+  }
+  .letter::before{
+    content:'';position:absolute;inset:9px;pointer-events:none;
+    border:2px dashed rgba(43,35,64,.22);
+  }
+  .letter-title{
+    font-size:clamp(18px,3.2vw,24px);color:#8a2f3d;text-align:center;
+    margin:0 0 6px;letter-spacing:2px;position:relative;
+  }
+  .letter-title small{display:block;font-size:11px;color:#a08b6a;margin-top:6px;letter-spacing:3px;}
+  .letter-hr{
+    height:0;border-top:3px solid rgba(43,35,64,.25);margin:20px 0 24px;position:relative;
+  }
+  .letter-body{
+    font-size:clamp(15px,2.4vw,17.5px);line-height:2.15;text-align:justify;
+    position:relative;color:#332a4d;
+  }
+  .letter-body em{font-style:normal;color:#b03a4a;border-bottom:2px solid rgba(176,58,74,.4);}
+  .sign-row{
+    margin-top:26px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+    position:relative;
+  }
+  .sign-row img{
+    width:min(150px,42vw);height:auto;
+    filter:drop-shadow(2px 2px 0 rgba(43,35,64,.18));
+    transform:rotate(-3deg);
+  }
+  .sign-row .sign-date{font-size:12px;color:#a08b6a;letter-spacing:2px;}
+
+  /* 鲜花：依偎在信笺右上角 */
+  .flower-beside{
+    position:absolute;right:-34px;top:-46px;width:118px;height:auto;
+    filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35));
+    animation:flowerbob 3.6s ease-in-out infinite;
+    pointer-events:none;z-index:2;
+  }
+  @keyframes flowerbob{0%,100%{transform:translateY(0) rotate(4deg);}50%{transform:translateY(-9px) rotate(-3deg);}}
+
+  /* ===== 献花互动 ===== */
+  .offer{
+    margin-top:44px;text-align:center;
+  }
+  .offer-btn{
+    font-family:inherit;cursor:pointer;font-size:16px;letter-spacing:2px;
+    color:#2b2340;background:linear-gradient(180deg,#ffe9b0,#ffcd75 55%,#e8a94a);
+    border:4px solid #000;padding:14px 26px;
+    box-shadow:0 0 0 4px rgba(255,143,163,.5), 6px 6px 0 var(--shadow);
+    transition:.12s;display:inline-flex;align-items:center;gap:10px;
+  }
+  .offer-btn:hover{filter:brightness(1.08);transform:translate(-1px,-1px);}
+  .offer-btn:active{transform:translate(2px,2px);box-shadow:0 0 0 4px rgba(255,143,163,.5), 2px 2px 0 var(--shadow);}
+  .offer-btn svg{width:22px;height:22px;display:block;}
+  .offer-btn.popped{animation:btnpop .35s ease;}
+  @keyframes btnpop{0%{transform:scale(1);}40%{transform:scale(1.1) rotate(-2deg);}100%{transform:scale(1);}}
+  .offer-count{
+    margin-top:16px;font-size:13px;color:#cdbfe0;text-shadow:2px 2px 0 #000;
+  }
+  .offer-count b{color:var(--rose);font-size:18px;text-shadow:2px 2px 0 #000;}
+  .offer-note{margin-top:6px;font-size:12px;color:#8f84a6;}
+
+  /* 献花飞出的花 */
+  .fly-flower{
+    position:fixed;width:44px;height:44px;pointer-events:none;z-index:160;
+    image-rendering:pixelated;
+  }
+
+  /* ===== 页脚 ===== */
+  footer{
+    margin-top:80px;text-align:center;font-size:12px;color:#8f84a6;
+    text-shadow:2px 2px 0 #000;line-height:2;padding-bottom:30px;
+  }
+  footer .mono{display:block;margin-top:8px;font-size:8px;color:#6f6690;}
+
+  /* ===== 滚动显现 ===== */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ===== 响应式 ===== */
+  @media (max-width:720px){
+    .duo{grid-template-columns:1fr;gap:22px;}
+    .duo .pix-frame{width:min(320px,84vw);margin:0 auto;}
+    .flower-beside{width:84px;right:-10px;top:-34px;}
+    .letter-body{text-align:left;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .petals,.hero .pix-frame,.flower-beside,.scroll-hint{animation:none;}
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 漂浮像素花瓣背景 -->
+<div class="petals" id="petals" aria-hidden="true"></div>
+
+<main class="page">
+
+  <!-- 抬头 -->
+  <div class="kicker">
+    ★ 一封写给大家的像素信笺 ★
+    <span class="mono">A PIXEL LETTER FOR YOU</span>
+  </div>
+  <h1>愿你活成自己喜欢的样子</h1>
+  <p class="subtitle">生活不易 · 但你很值得 · 把每一天过得热气腾腾</p>
+
+  <!-- 开头 · 最后一张图片（保安照） -->
+  <section class="hero reveal" id="hero">
+    <div class="pix-frame">
+      <img src="images/hero-guard.jpg" alt="穿着保安制服的年轻人，用手比出坚定手势的照片">
+      <div class="pix-cap">第一帧 · 此刻认真生活的你<small>THE OPENING FRAME</small></div>
+    </div>
+    <p class="hero-note">每一张认真生活的面孔，都值得被看见——<br><b>你努力的样子，本身就是一束光。</b></p>
+    <div class="scroll-hint">▼ 往下看看 ▼</div>
+  </section>
+
+  <!-- 中段 · 前两张图片（肖像） -->
+  <section class="mid reveal" id="mid">
+    <h2 class="sect-title">热爱与坚持 · 照亮平凡的日子</h2>
+    <p class="sect-sub">PASSION &amp; PERSEVERANCE</p>
+    <div class="duo">
+      <div class="pix-frame" data-tilt>
+        <img src="images/portrait-1.jpg" alt="人物肖像照片一">
+        <div class="pix-cap">眼里有光的人，走路都带风<small>KEEP THE FIRE</small></div>
+      </div>
+      <div class="pix-frame" data-tilt>
+        <img src="images/portrait-2.jpg" alt="人物肖像照片二">
+        <div class="pix-cap">把热爱熬成信仰，把信仰走成日常<small>TURN LOVE INTO BELIEF</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 结尾 · 哲理段落 + 鲜花 + 签名 -->
+  <section class="end reveal" id="end">
+    <h2 class="sect-title">最后，想对各位朋友说</h2>
+    <p class="sect-sub">A FEW WORDS FROM THE HEART</p>
+
+    <div class="letter-zone">
+      <img class="flower-beside" id="flowerBeside" src="images/flower.png" alt="一朵像素风粉色玫瑰">
+      <div class="letter">
+        <h3 class="letter-title">写给各位朋友的一封信<small>WITH LOVE</small></h3>
+        <div class="letter-hr"></div>
+        <p class="letter-body">各位朋友，虽然现在的大环境不容易，未来也有很多不确定，但我还是真心祝愿大家——无论经历什么，都能保持一份好心情，照顾好自己，好好吃饭、好好睡觉、好好生活。愿大家不被生活磨掉笑容，不为明天过度担忧，把当下的每一天都过得<em>热气腾腾</em>。祝大家都能活成自己喜欢的样子，拥有一个更好、更值得的人生！</p>
+        <div class="sign-row">
+          <img src="images/signature.png" alt="手写签名">
+          <span class="sign-date" id="signDate"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 献花互动 -->
+    <div class="offer">
+      <button class="offer-btn" id="offerBtn">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3v5M12 16v5M3 12h5M16 12h5M6.5 6.5l3 3M14.5 14.5l3 3M17.5 6.5l-3 3M9.5 14.5l-3 3" stroke="#2b2340" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="12" r="3.4" fill="#e43b44" stroke="#2b2340" stroke-width="1.6"/>
+        </svg>
+        为生活献上一朵花
+      </button>
+      <div class="offer-count">已献出 <b id="flowerCount">0</b> 朵花</div>
+      <div class="offer-note">点一下按钮，就有一朵花飞向这封信 · 数据保存在本机</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  ★ 愿你活成自己喜欢的样子 · 像素信笺 ★<br>
+  好好吃饭 · 好好睡觉 · 好好生活
+  <span class="mono">STAY WARM · STAY YOU</span>
+</footer>
+
+<script>
+/* ================= 工具 ================= */
+const $ = id => document.getElementById(id);
+const rnd = (a,b) => a + Math.random()*(b-a);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= 落款日期 ================= */
+(function(){
+  const d = new Date();
+  $('signDate').textContent = d.getFullYear() + ' 年 · 写于一个想你的日子';
+})();
+
+/* ================= 漂浮像素花瓣 ================= */
+(function(){
+  if(reduceMotion) return;
+  const box = $('petals');
+  const colors = ['', 'g', 'v', 'l'];
+  const n = window.innerWidth < 720 ? 14 : 26;
+  for(let i=0;i<n;i++){
+    const p = document.createElement('i');
+    p.className = 'petal ' + colors[Math.floor(Math.random()*colors.length)];
+    p.style.left = Math.random()*100 + '%';
+    p.style.animationDuration = rnd(9, 20) + 's';
+    p.style.animationDelay = (-rnd(0, 20)) + 's';
+    if(Math.random() < 0.3){ p.style.width = '14px'; p.style.height = '14px'; }
+    box.appendChild(p);
+  }
+})();
+
+/* ================= 滚动显现 ================= */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){ els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold: 0.12});
+  els.forEach(e => io.observe(e));
+})();
+
+/* ================= 照片轻微倾斜（桌面端） ================= */
+(function(){
+  if(reduceMotion || window.matchMedia('(pointer: coarse)').matches) return;
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const dx = (e.clientX - r.left) / r.width - 0.5;
+      const dy = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = 'perspective(600px) rotateY(' + (dx*7) + 'deg) rotateX(' + (-dy*7) + 'deg) translate(-2px,-2px)';
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  });
+})();
+
+/* ================= 献花互动 ================= */
+(function(){
+  const KEY = 'pixel_letter_flowers_v1';
+  let count = 0;
+  try{ count = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; }catch(e){}
+  const numEl = $('flowerCount'), btn = $('offerBtn');
+  function render(){ numEl.textContent = count; }
+  render();
+
+  function flyFlower(x, y, i){
+    const img = document.createElement('img');
+    img.src = 'images/flower.png';
+    img.className = 'fly-flower';
+    img.alt = '';
+    const size = rnd(26, 52);
+    img.style.width = size + 'px'; img.style.height = size + 'px';
+    img.style.left = (x - size/2) + 'px'; img.style.top = y + 'px';
+    document.body.appendChild(img);
+    const drift = rnd(-90, 90), rise = rnd(160, 300), dur = rnd(900, 1500);
+    const t0 = performance.now();
+    (function anim(t){
+      const p = Math.min(1, (t - t0) / dur);
+      const ease = 1 - Math.pow(1 - p, 2);
+      const px = drift * ease;
+      const py = -rise * Math.sin(Math.PI * ease) + 120 * ease * ease;
+      img.style.transform = 'translate(' + px + 'px,' + py + 'px) rotate(' + (p*420*(i%2?1:-1)) + 'deg) scale(' + (1 - p*0.35) + ')';
+      img.style.opacity = String(1 - p*p);
+      if(p < 1) requestAnimationFrame(anim);
+      else img.remove();
+    })(t0);
+  }
+
+  btn.addEventListener('click', () => {
+    count++; render();
+    try{ localStorage.setItem(KEY, String(count)); }catch(e){}
+    const r = btn.getBoundingClientRect();
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const n = reduceMotion ? 1 : 7;
+    for(let i=0;i<n;i++){
+      setTimeout(() => flyFlower(cx + rnd(-24, 24), cy + rnd(-8, 8), i), reduceMotion ? 0 : i*70);
+    }
+    btn.classList.remove('popped'); void btn.offsetWidth; btn.classList.add('popped');
+    if(navigator.vibrate){ try{ navigator.vibrate(14); }catch(e){} }
+  });
+})();
+</script>
+</body>
+</html>
